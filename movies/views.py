@@ -9,4 +9,4 @@ class AddMovieWathcedList(CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        serializer.save(user=self.reques.user)
+        serializer.save(user=self.request.user)
