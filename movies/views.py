@@ -1,4 +1,4 @@
-from rest_framework.generics import CreateAPIView, ListAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from .models import Movie
 from .serializers import MovieSerializer
@@ -10,6 +10,20 @@ class AddMovieWathcedList(CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+class UpdateMovieWatched(RetrieveUpdateAPIView):
+    queryset = Movie.objects.all()
+    serializer_class = MovieSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        movie_pk = self.kwargs.get('pk')
+        movie = Movie.objects.filter(pk=movie_pk, user=self.request.user).first()
+
+        if not movie:
+            # raise NotFound("Filme não encontrado")
+            return None
+        return movie 
 
 class WatchedMovieListView(ListAPIView):
     queryset = Movie.objects.all()
