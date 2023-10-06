@@ -1,5 +1,6 @@
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated
+from django.http import Http404
 from .models import Movie
 from .serializers import MovieSerializer
 
@@ -21,8 +22,7 @@ class UpdateMovieWatched(RetrieveUpdateAPIView):
         movie = Movie.objects.filter(pk=movie_pk, user=self.request.user).first()
 
         if not movie:
-            # raise NotFound("Filme não encontrado")
-            return None
+            raise Http404
         return movie 
 
 class WatchedMovieListView(ListAPIView):
