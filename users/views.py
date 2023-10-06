@@ -1,11 +1,11 @@
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.generics import CreateAPIView, RetrieveAPIView
+from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth import authenticate, login, get_user_model
 from .models import CustomUser
-from .serializers import UserRegistrationSerializer, UserLoginSerializer
+from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserProfileSerializer
 
 User = get_user_model()
 
@@ -37,8 +37,9 @@ class UserLoginView(APIView):
             return Response({'message': 'Login efetuado. '})
         return Response({'message':'Credenciais invalidas'}, status=status.HTTP_401_UNAUTHORIZED)
     
-class UserProfileView(RetrieveAPIView):
-    serializer_class = UserRegistrationSerializer
+class UserProfileView(RetrieveUpdateAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
