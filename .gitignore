@@ -5,6 +5,7 @@
 *.log
 *.pot
 *.pyc
+.pyc
 __pycache__/
 local_settings.py
 db.sqlite3
@@ -68,6 +69,7 @@ coverage.xml
 .pytest_cache/
 cover/
 __pycache__
+_pycache_
 
 # Translations
 *.mo
