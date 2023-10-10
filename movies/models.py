@@ -1,24 +1,8 @@
 from django.db import models
 from users.models import CustomUser
+from .enums import GENRE_CHOICES, SELECT
 
 class Movie(models.Model):
-    SELECT = 'Select Genre'
-    ACTION = 'Action'
-    COMEDY = 'Comedy'
-    DRAMA = 'Drama'
-    ROMANCE = 'Romance'
-    SCIFI = 'Science Fiction'
-    HORROR = 'Horror'
-
-    GENRE_CHOICES = [
-        (SELECT, 'Select Genre'),
-        (ACTION, 'Action'),
-        (COMEDY, 'Comedy'),
-        (DRAMA, 'Drama'),
-        (ROMANCE, 'Romance'),
-        (SCIFI, 'Science Fiction'),
-        (HORROR, 'Horror'),
-    ]
 
     title = models.CharField(max_length=100)
     year = models.IntegerField()
