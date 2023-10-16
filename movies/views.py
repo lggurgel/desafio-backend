@@ -1,5 +1,5 @@
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.http import Http404
 from movies.models import Movie
 from movies.serializers import MovieSerializer
@@ -15,7 +15,7 @@ class AddMovieWathcedList(CreateAPIView):
 class UpdateMovieWatched(RetrieveUpdateAPIView):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get_object(self):
         movie_pk = self.kwargs.get('pk')
