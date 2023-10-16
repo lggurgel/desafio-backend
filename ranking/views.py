@@ -13,8 +13,12 @@ class UserRankMovieView(CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
-        movie_id = request.data.get('movie_id')
-        ranking = request.data.get('ranking')
+        movie_id = request.data.get('movie')
+        ranking = int(request.data.get('personal_rating'))
+
+        # import debugpy
+        # debugpy.listen(5678)
+        # debugpy.wait_for_client()
 
         try:
             movie = Movie.objects.get(pk=movie_id)
@@ -22,9 +26,10 @@ class UserRankMovieView(CreateAPIView):
             raise Http404('Filme não encontrado')
         
         user = request.user
+        ranking_instance = create_ranking_instance(movie_id, user, personal_rating)
 
         ranking_instance, created = Ranking.objects.get_or_create(user=user, movie=movie)
-        ranking_instance.ranking = ranking
+        ranking_instance.personal_rating = ranking
         ranking_instance.save()
 
         return Response({'message': 'Avaliação registrada com sucesso!'}, status=status.HTTP_201_CREATED)
