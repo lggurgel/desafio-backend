@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Movie
+from movies.models import Movie
 
 class MovieAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Movie._meta.fields]
