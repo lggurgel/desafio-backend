@@ -21,7 +21,9 @@ class UserRankMovieView(CreateAPIView):
         except Movie.DoesNotExist:
             raise Http404('Filme não encontrado')
         
-        ranking_instance, created = Ranking.objects.get_or_create(user=request.user, movie=movie)
+        user = request.user
+
+        ranking_instance, created = Ranking.objects.get_or_create(user=user, movie=movie)
         ranking_instance.ranking = ranking
         ranking_instance.save()
 
