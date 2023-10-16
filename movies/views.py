@@ -1,8 +1,8 @@
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from django.http import Http404
-from .models import Movie
-from .serializers import MovieSerializer
+from movies.models import Movie
+from movies.serializers import MovieSerializer
 
 class AddMovieWathcedList(CreateAPIView):
     queryset = Movie.objects.all()
