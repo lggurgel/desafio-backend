@@ -13,3 +13,6 @@ class Movie(models.Model):
         default=SELECT
     )
     user = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING)
+
+    def __str__(self):
+        return self.title
