@@ -20,7 +20,7 @@ class UserRateMovieView(CreateAPIView):
         try:
             movie = Movie.objects.get(pk=movie_id)
         except Movie.DoesNotExist:
-            raise Http404('Filme não encontrado')
+            raise Http404('Movie not found.')
         
         user = request.user
 
@@ -28,7 +28,7 @@ class UserRateMovieView(CreateAPIView):
         ranking_instance.personal_rating = ranking
         ranking_instance.save()
 
-        return Response({'message': 'Avaliação registrada com sucesso!'}, status=status.HTTP_201_CREATED)
+        return Response({'message': 'Rating registered successfully!'}, status=status.HTTP_201_CREATED)
     
 class UserRankingListView(generics.ListAPIView):
     serializer_class = UserRankingListSerializer
@@ -37,3 +37,16 @@ class UserRankingListView(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         return Ranking.objects.filter(user=user).select_related('movie')
+    
+class RatingDeleteView(generics.DestroyAPIView):
+    queryset = Ranking.objects.all()
+    serializer_class = UserRateMovieSerializer
+    permission_classes = [IsAuthenticated]
+
+    def destroy(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            self.perform_destroy(instance)
+            return Response({'message':'Rating successfully deleted.'})
+        except Ranking.DoesNotExist:
+            return Response({'message':'Rating not found.'})

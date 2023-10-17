@@ -14,4 +14,4 @@ class UserRankingListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ranking
-        exclude = ('id', 'user',)
+        exclude = ('user',)
