@@ -1,6 +1,7 @@
 from django.urls import path
-from ranking.views import UserRankMovieView
+from ranking.views import UserRateMovieView, UserRankingListView
 
 urlpatterns = [
-    path('user-rank-movie/', UserRankMovieView.as_view(), name='user-rank-movie')
+    path('user-rate-movie/', UserRateMovieView.as_view(), name='user-rate-movie'),
+    path('user-rankings/', UserRankingListView.as_view(), name='user=rankings' )
 ]

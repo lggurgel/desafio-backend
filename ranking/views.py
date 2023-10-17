@@ -1,15 +1,16 @@
 from rest_framework.response import Response
+from rest_framework import generics
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from django.http import Http404
 from movies.models import Movie
 from ranking.models import Ranking
-from ranking.serializers import UserRankMovieSerializer
+from ranking.serializers import UserRateMovieSerializer, UserRankingListSerializer
 
-class UserRankMovieView(CreateAPIView):
+class UserRateMovieView(CreateAPIView):
     queryset = Ranking.objects.all()
-    serializer_class = UserRankMovieSerializer
+    serializer_class = UserRateMovieSerializer
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
@@ -29,4 +30,10 @@ class UserRankMovieView(CreateAPIView):
 
         return Response({'message': 'Avaliação registrada com sucesso!'}, status=status.HTTP_201_CREATED)
     
-    
+class UserRankingListView(generics.ListAPIView):
+    serializer_class = UserRankingListSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Ranking.objects.filter(user=user).select_related('movie')
