@@ -1,11 +1,16 @@
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from django.http import Http404
 from movies.models import Movie
 from movies.serializers import MovieSerializer
-from ranking.models import Ranking
+
+class MyCustomPagination(PageNumberPagination):
+    page_size = 2
+    page_size_query_param = 'page_size'
+    max_page_size = 50
 
 class AddMovieWathcedList(CreateAPIView):
     queryset = Movie.objects.all()
@@ -43,7 +48,7 @@ class ListAllMovies(ListAPIView):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ['title', 'director']
     filterset_fields = ['genre']
-    pagination_class = 2
+    pagination_class = MyCustomPagination
     
     permission_classes = [AllowAny]
  
