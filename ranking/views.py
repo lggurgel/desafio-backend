@@ -1,11 +1,12 @@
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework.generics import CreateAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import status
 from ranking.models import Ranking
-from ranking.serializers import UserRateMovieSerializer, UserRankingListSerializer
-from ranking.repository import create_ranking_instance
+from ranking.serializers import UserRateMovieSerializer, UserRankingListSerializer, GeneralMovieRatingSerializer
+from ranking.repository import create_ranking_instance, calculate_movie_ratings
 
 class UserRateMovieView(CreateAPIView):
     queryset = Ranking.objects.all()
@@ -41,3 +42,20 @@ class RatingDeleteView(generics.DestroyAPIView):
             return Response({'message':'Rating successfully deleted.'})
         except Ranking.DoesNotExist:
             return Response({'message':'Rating not found.'})
+
+class GeneralMovieRating(APIView):
+    permission_classes = [AllowAny]
+    def get(self, request):
+        movie_ratings = calculate_movie_ratings()
+
+        results = [
+            {
+                'movie_title': item['movie__title'],
+                'average_rating': item['avg_rating']
+            }
+            for item in movie_ratings
+        ]
+
+        serializer = GeneralMovieRatingSerializer(results, many=True)
+
+        return Response(serializer.data)
