@@ -1,5 +1,4 @@
 from rest_framework import filters
-from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import generics
@@ -8,7 +7,6 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from django.http import Http404
 from movies.models import Movie
 from movies.serializers import MovieSerializer
-from ranking.repository import calculate_movie_ratings
 
 class MyCustomPagination(PageNumberPagination):
     page_size = 2
