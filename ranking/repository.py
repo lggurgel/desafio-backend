@@ -17,29 +17,8 @@ def create_ranking_instance(user, movie_id, rating):
     return ranking_instance
 
 
-# def calculate_movie_ratings():
-#     movie_ratings = Ranking.objects.values('movie__title').annotate(avg_rating=Avg('personal_rating'))
-#     movie_ratings = movie_ratings.order_by('-avg_rating')
+def calculate_movie_ratings():
+    movie_ratings = Ranking.objects.values('movie__title').annotate(avg_rating=Avg('personal_rating'))
+    movie_ratings = movie_ratings.order_by('-avg_rating')
 
-#     return movie_ratings
-
-def calculate_movie_ratings(user_favorite_genre=None, include_title_genre=False):
-    fields = ['movie__title',]
-
-    if user_favorite_genre and include_title_genre:
-        fields.append('movie__genre')
-
-        movie_ratings = (
-        Ranking.objects
-        .filter(movie__genre=user_favorite_genre)
-        .values(*fields)
-        .annotate(avg_rating=Avg('personal_rating'))
-        .order_by('-avg_rating')
-    )
-        return movie_ratings
-
-    else:
-        movie_ratings = Ranking.objects.values('movie__title').annotate(avg_rating=Avg('personal_rating'))
-        movie_ratings = movie_ratings.order_by('-avg_rating')
-
-        return movie_ratings
+    return movie_ratings
