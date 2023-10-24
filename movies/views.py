@@ -6,7 +6,9 @@ from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateAP
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from django.http import Http404
 from movies.models import Movie
-from movies.serializers import MovieSerializer
+from movies.serializers import MovieSerializer, RecommendedMovieSerializer
+from ranking.models import Ranking
+from ranking.repository import calculate_movie_ratings
 
 class MyCustomPagination(PageNumberPagination):
     page_size = 2
@@ -57,11 +59,28 @@ class ListAllMovies(ListAPIView):
         return super().get(request, *args, **kwargs)
     
 class RecommendedMoviesView(generics.ListAPIView):
-    serializer_class = MovieSerializer
+    serializer_class = RecommendedMovieSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
         user_favorite_genre = user.favorite_film_genre
+        
+        movie_ratings = calculate_movie_ratings(include_title_genre=True)
 
-        return Movie.objects.filter(genre=user_favorite_genre)
+        recommended_movies = [
+            {
+                'movie_title': item['movie__title'],
+                'avg_rating': item['avg_rating']
+            }
+            for item in movie_ratings
+        ]
+
+        for movie in recommended_movies:
+            user_rating = Ranking.objects.filter(user=user, movie__title=movie['movie_title']).first()
+            if user_rating:
+                movie['user_personal_rating'] = user_rating.personal_rating
+            else:
+                movie['user_personal_rating'] = None
+
+        return recommended_movies
