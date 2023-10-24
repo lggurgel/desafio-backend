@@ -23,14 +23,16 @@ def create_ranking_instance(user, movie_id, rating):
 
 #     return movie_ratings
 
-def calculate_movie_ratings(include_title_genre=False):
-    # fields = ['movie__title', 'avg_rating']
+def calculate_movie_ratings(user_favorite_genre=None, include_title_genre=False):
+    fields = ['movie__title',]
 
-    if include_title_genre:
-        # fields.append('movie__genre')
+    if user_favorite_genre and include_title_genre:
+        fields.append('movie__genre')
+
         movie_ratings = (
         Ranking.objects
-        .values('movie__title', 'movie__genre')
+        .filter(movie__genre=user_favorite_genre)
+        .values(*fields)
         .annotate(avg_rating=Avg('personal_rating'))
         .order_by('-avg_rating')
     )
