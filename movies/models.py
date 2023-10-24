@@ -4,7 +4,7 @@ from movies.enums import GENRE_CHOICES, SELECT
 
 class Movie(models.Model):
 
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, unique=True)
     year = models.IntegerField()
     director = models.CharField(max_length=100)
     genre = models.CharField(
