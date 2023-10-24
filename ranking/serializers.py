@@ -18,4 +18,4 @@ class UserRankingListSerializer(serializers.ModelSerializer):
 
 class GeneralMovieRatingSerializer(serializers.Serializer):
     movie_title = serializers.CharField()
-    average_rating = serializers.DecimalField(max_digits=3, decimal_places=2)
+    rating = serializers.DecimalField(max_digits=3, decimal_places=2)

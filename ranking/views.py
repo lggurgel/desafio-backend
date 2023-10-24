@@ -43,7 +43,7 @@ class RatingDeleteView(generics.DestroyAPIView):
         except Ranking.DoesNotExist:
             return Response({'message':'Rating not found.'})
 
-class GeneralMovieRating(APIView):
+class GeneralListMovieRatingView(APIView):
     permission_classes = [AllowAny]
     def get(self, request):
         movie_ratings = calculate_movie_ratings()
@@ -51,7 +51,7 @@ class GeneralMovieRating(APIView):
         results = [
             {
                 'movie_title': item['movie__title'],
-                'average_rating': item['avg_rating']
+                'rating': item['avg_rating']
             }
             for item in movie_ratings
         ]
