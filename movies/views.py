@@ -76,11 +76,4 @@ class RecommendedMoviesView(generics.ListAPIView):
             for item in movie_ratings
         ]
 
-        for movie in recommended_movies:
-            user_rating = Ranking.objects.filter(user=user, movie__title=movie['movie_title']).first()
-            if user_rating:
-                movie['user_personal_rating'] = user_rating.personal_rating
-            else:
-                movie['user_personal_rating'] = None
-
         return recommended_movies
