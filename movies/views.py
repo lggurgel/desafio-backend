@@ -1,17 +1,18 @@
-from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
+from django.http import Http404
+from django.db.models import Q, Avg
+from rest_framework import filters
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import generics
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
-from django.http import Http404
 from movies.models import Movie
 from movies.serializers import MovieSerializer, RecommendedMovieSerializer
 from ranking.models import Ranking
 from ranking.repository import calculate_movie_ratings
 
 class MyCustomPagination(PageNumberPagination):
-    page_size = 2
+    page_size = 10
     page_size_query_param = 'page_size'
     max_page_size = 50
 
@@ -57,7 +58,7 @@ class ListAllMovies(ListAPIView):
  
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
-    
+        
 class RecommendedMoviesView(generics.ListAPIView):
     serializer_class = RecommendedMovieSerializer
     permission_classes = [IsAuthenticated]
@@ -65,15 +66,13 @@ class RecommendedMoviesView(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         user_favorite_genre = user.favorite_film_genre
-        
-        movie_ratings = calculate_movie_ratings(include_title_genre=True)
 
-        recommended_movies = [
-            {
-                'movie_title': item['movie__title'],
-                'avg_rating': item['avg_rating']
-            }
-            for item in movie_ratings
-        ]
-
+        recommended_movies = (
+            Movie.objects
+            .filter(genre=user_favorite_genre)
+            .exclude(ranking__user=user)
+            .annotate(rating=Avg('ranking__personal_rating'))
+            .values('title', 'rating')
+            .order_by('-rating')
+        )
         return recommended_movies
