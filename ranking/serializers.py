@@ -6,7 +6,7 @@ class UserRateMovieSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ranking
-        exclude = ('user',)
+        fields = ['movie', 'personal_rating', 'comment']
 
 
 class UserRankingListSerializer(serializers.ModelSerializer):
