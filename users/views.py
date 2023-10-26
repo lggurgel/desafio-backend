@@ -35,7 +35,7 @@ class UserLoginView(APIView):
         if user:
             login(request, user)
             return Response({'message': 'Login efetuado. '})
-        return Response({'essage':'Credenciais invalidas'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({'message':'Credenciais invalidas'}, status=status.HTTP_401_UNAUTHORIZED)
     
 class UserLogoutView(APIView):
     permission_classes = [IsAuthenticated]
