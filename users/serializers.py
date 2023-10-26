@@ -16,8 +16,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         if data['password'] != data['password_confirm']:
             raise serializers.ValidationError("As senhas não coicidem.")
         validate_password(data['password'])
-        return data 
-    
+        return data
+
     def create(self, validated_data):
         user = User.objects.create(
             email=validated_data['email'],
@@ -32,7 +32,7 @@ class UserLoginSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True)
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = CustomUser
         fields = ('username', 'email', 'password', 'first_name', 'location', 'favorite_film_genre')
