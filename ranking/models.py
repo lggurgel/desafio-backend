@@ -3,8 +3,6 @@ from users.models import CustomUser
 from movies.models import Movie
 
 class Comment(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     text = models.TextField(max_length=300)
     comment_date = models.DateTimeField(auto_now_add=True)
 
