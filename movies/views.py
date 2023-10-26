@@ -72,7 +72,7 @@ class RecommendedMoviesView(generics.ListAPIView):
             .filter(genre=user_favorite_genre)
             .exclude(ranking__user=user)
             .annotate(rating=Avg('ranking__personal_rating'))
-            .values('title', 'rating')
+            .values('title', 'rating', 'genre')
             .order_by('-rating')
         )
         return recommended_movies

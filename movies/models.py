@@ -12,7 +12,7 @@ class Movie(models.Model):
         choices=GENRE_CHOICES,
         default=SELECT
     )
-    user = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING)
+    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.title
