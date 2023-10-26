@@ -4,7 +4,7 @@ from django.http import Http404
 from django.db.models import Avg
 
 
-def create_ranking_instance(user, movie_id, rating):
+def create_ranking_instance(user, movie_id, rating, comment = None):
     try:
         movie = Movie.objects.get(pk=movie_id)
     except Movie.DoesNotExist:
@@ -12,6 +12,7 @@ def create_ranking_instance(user, movie_id, rating):
 
     ranking_instance, created = Ranking.objects.get_or_create(user=user, movie=movie)
     ranking_instance.personal_rating = rating
+    ranking_instance.comment = comment
     ranking_instance.save()
 
     return ranking_instance
