@@ -6,6 +6,9 @@ class Comment(models.Model):
     text = models.TextField(max_length=300)
     comment_date = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return self.text
+
 class Ranking(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
