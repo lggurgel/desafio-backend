@@ -4,7 +4,7 @@ from movies.models import Movie
 from ranking.models import Ranking, Comment
 from ranking.serializers import CommentSerializer
 
-def create_ranking_instance(user, movie_id, rating, comment = None):
+def create_ranking_instance(user, movie_id, rating, comment=None):
     try:
         movie = Movie.objects.get(pk=movie_id)
     except Movie.DoesNotExist:
@@ -29,9 +29,7 @@ def create_ranking_instance(user, movie_id, rating, comment = None):
     else:
         ranking_instance = Ranking.objects.create(user=user, movie=movie, personal_rating=rating, comment=comment)
 
-
     return ranking_instance
-
 
 def calculate_movie_ratings():
     movie_ratings = Ranking.objects.values('movie__title').annotate(avg_rating=Avg('personal_rating'))
