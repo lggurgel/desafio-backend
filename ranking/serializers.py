@@ -26,10 +26,16 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class UserRankingListSerializer(serializers.ModelSerializer):
     movie = serializers.ReadOnlyField(source='movie.title')
+    comment = serializers.ReadOnlyField(source='comment.text')
 
     class Meta:
         model = Ranking
         exclude = ('user',)
+    
+    def get_comment(self, obj):
+        if obj.comment:
+            return obj.comment.text
+        return None
 
 class GeneralMovieRatingSerializer(serializers.Serializer):
     movie_title = serializers.CharField()
