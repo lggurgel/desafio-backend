@@ -17,17 +17,10 @@ class UserRateMovieView(CreateAPIView):
         user = request.user
         movie_id = request.data.get('movie')
         rating = int(request.data.get('personal_rating'))
+        comment_text = request.data.get('comment')
 
-        comment = None
-        if comment_text := request.data.get('comment'):
-            comment_data = {'user': user.id, 'movie': movie_id, 'text': comment_text}
-            comment_serializer = CommentSerializer(data=comment_data)
-            comment_serializer.is_valid(raise_exception=True)
-
-            comment = comment_serializer.save()
-
-        ranking_instance = create_ranking_instance(user, movie_id, rating, comment=comment)
-
+        ranking_instance = create_ranking_instance(user, movie_id, rating, comment=comment_text)
+       
         return Response(self.serializer_class(instance=ranking_instance).data, status=status.HTTP_201_CREATED)
     
 class UserRankingListView(generics.ListAPIView):
