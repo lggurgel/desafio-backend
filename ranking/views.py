@@ -4,8 +4,8 @@ from rest_framework import generics
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import status
-from ranking.models import Ranking
-from ranking.serializers import UserRateMovieSerializer, UserRankingListSerializer, GeneralMovieRatingSerializer, CommentSerializer
+from ranking.models import Ranking, Comment
+from ranking.serializers import UserRateMovieSerializer, UserRankingListSerializer, GeneralMovieRatingSerializer, CommentSerializer, CommentListSerializer
 from ranking.repository import create_ranking_instance, calculate_movie_ratings
 
 class UserRateMovieView(CreateAPIView):
@@ -22,7 +22,7 @@ class UserRateMovieView(CreateAPIView):
         ranking_instance = create_ranking_instance(user, movie_id, rating, comment=comment_text)
        
         return Response(self.serializer_class(instance=ranking_instance).data, status=status.HTTP_201_CREATED)
-    
+
 class UserRankingListView(generics.ListAPIView):
     serializer_class = UserRankingListSerializer
     permission_classes = [IsAuthenticated]
@@ -31,6 +31,10 @@ class UserRankingListView(generics.ListAPIView):
         user = self.request.user
         return Ranking.objects.filter(user=user).select_related('movie')
     
+    # import debugpy
+    # debugpy.listen(5678)
+    # debugpy.wait_for_client()
+
 class RatingDeleteView(generics.DestroyAPIView):
     queryset = Ranking.objects.all()
     serializer_class = UserRateMovieSerializer
@@ -60,3 +64,12 @@ class GeneralListMovieRatingView(APIView):
         serializer = GeneralMovieRatingSerializer(results, many=True)
 
         return Response(serializer.data)
+
+class CommentsListView(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = CommentListSerializer
+
+    def get(self, request):
+        comments = Ranking.objects.filter(comment__isnull=False).select_related('user', 'movie', 'comment')
+        serializer = self.serializer_class(comments, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

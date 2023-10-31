@@ -4,7 +4,7 @@ from movies.models import Movie
 
 class Comment(models.Model):
     text = models.TextField(max_length=300)
-    comment_date = models.DateTimeField(auto_now_add=True)
+    comment_date = models.DateField(auto_now=True, null=True)
 
     def __str__(self):
         return self.text
