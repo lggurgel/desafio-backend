@@ -5,33 +5,27 @@ from ranking.models import Ranking, Comment
 from ranking.serializers import CommentSerializer
 
 def create_ranking_instance(user, movie_id, rating, comment=None):
-    import debugpy
-    debugpy.listen(5678)
-    debugpy.wait_for_client()
+    # import debugpy
+    # debugpy.listen(5678)
+    # debugpy.wait_for_client()
     try:
         movie = Movie.objects.get(pk=movie_id)
     except Movie.DoesNotExist:
         raise Http404('Movie not found')
     
-    ranking_instance = Ranking.objects.filter(Q(user=user, movie=movie)).first()
+    ranking_instance, created = Ranking.objects.update_or_create(
+        user=user,
+        movie=movie,
+        defaults={"personal_rating":rating},
+    )
 
-    if ranking_instance:
-        ranking_instance.personal_rating = rating
-        if comment:
-            if ranking_instance.comment:
-                ranking_instance.comment.text = comment
-                ranking_instance.comment.save()
-            else:
-                comment_instance, created = Comment.objects.get_or_create(text=comment)
-                ranking_instance.comment = comment_instance
-        else:
-            ranking_instance.comment = None
-        
-        ranking_instance.save()
-    
-    else:
+    if created:
         comment = Comment.objects.create(text=comment)
-        ranking_instance = Ranking.objects.create(user=user, movie=movie, personal_rating=rating, comment=comment)
+        ranking_instance.comment = comment
+    else:
+        ranking_instance.comment.text = comment
+
+    ranking_instance.comment.save()
 
     return ranking_instance
 
