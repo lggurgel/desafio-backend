@@ -30,10 +30,6 @@ class UserRankingListView(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         return Ranking.objects.filter(user=user).select_related('movie')
-    
-    # import debugpy
-    # debugpy.listen(5678)
-    # debugpy.wait_for_client()
 
 class RatingDeleteView(generics.DestroyAPIView):
     queryset = Ranking.objects.all()
