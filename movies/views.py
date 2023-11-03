@@ -4,12 +4,13 @@ from django.db.models import Q, Avg
 from rest_framework import filters
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import generics
-from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateAPIView, RetrieveAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from movies.models import Movie
-from movies.serializers import MovieSerializer, RecommendedMovieSerializer
+from movies.serializers import MovieSerializer, UpdateMovieSerializer, RecommendedMovieSerializer
 from ranking.models import Ranking
 from ranking.repository import calculate_movie_ratings
+from movies.permissions import IsOwnerOrReadOnly
 
 class MyCustomPagination(PageNumberPagination):
     page_size = 10
@@ -28,18 +29,10 @@ class MovieDetailView(RetrieveAPIView):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
 
-class UpdateMovieView(RetrieveUpdateAPIView):
+class UpdateMovieView(UpdateAPIView):
     queryset = Movie.objects.all()
-    serializer_class = MovieSerializer
-    permission_classes = [IsAdminUser]
-
-    def get_object(self):
-        movie_pk = self.kwargs.get('pk')
-        movie = Movie.objects.filter(pk=movie_pk).first()
-
-        if not movie:
-            raise Http404
-        return movie 
+    serializer_class = UpdateMovieSerializer
+    permission_classes = [IsOwnerOrReadOnly]
 
 class CreatedMovieListView(ListAPIView): #filmes que user adicionou
     queryset = Movie.objects.all()

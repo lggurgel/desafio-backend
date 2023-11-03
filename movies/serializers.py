@@ -4,7 +4,14 @@ from movies.models import Movie
 class MovieSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
-        exclude = ('user'),
+        fields = ('user'),
+
+class UpdateMovieSerializer(serializers.ModelSerializer):
+    user = serializers.CharField()
+    
+    class Meta:
+        model = Movie
+        fields = "__all__"
 
 class RecommendedMovieSerializer(serializers.Serializer):
     title = serializers.CharField()
