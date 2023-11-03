@@ -7,7 +7,7 @@ from rest_framework import generics
 from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from movies.models import Movie
-from movies.serializers import MovieSerializer, UpdateMovieSerializer, RecommendedMovieSerializer
+from movies.serializers import MovieSerializer, RecommendedMovieSerializer
 from ranking.models import Ranking
 from ranking.repository import calculate_movie_ratings
 from movies.permissions import IsOwnerOrReadOnly
@@ -31,7 +31,7 @@ class MovieDetailView(RetrieveAPIView):
 
 class UpdateMovieView(UpdateAPIView):
     queryset = Movie.objects.all()
-    serializer_class = UpdateMovieSerializer
+    serializer_class = MovieSerializer
     permission_classes = [IsOwnerOrReadOnly]
 
 class CreatedMovieListView(ListAPIView): #filmes que user adicionou
