@@ -20,10 +20,15 @@ def create_ranking_instance(user, movie_id, rating, comment=None):
         comment = Comment.objects.create(text=comment)
         ranking_instance.comment = comment
     else:
-        ranking_instance.comment.text = comment
+        if not ranking_instance.comment:
+            comment_model = Comment.objects.create(text=comment) 
+            ranking_instance.comment = comment_model
+        else:
+            ranking_instance.comment.text = comment
 
     ranking_instance.comment.save()
-
+    ranking_instance.save()
+    
     return ranking_instance
 
 def calculate_movie_ratings():
