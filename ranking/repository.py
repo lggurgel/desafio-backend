@@ -5,9 +5,6 @@ from ranking.models import Ranking, Comment
 from ranking.serializers import CommentSerializer
 
 def create_ranking_instance(user, movie_id, rating, comment=None):
-    # import debugpy
-    # debugpy.listen(5678)
-    # debugpy.wait_for_client()
     try:
         movie = Movie.objects.get(pk=movie_id)
     except Movie.DoesNotExist:
