@@ -4,7 +4,7 @@ from django.db.models import Q, Avg
 from rest_framework import filters
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import generics
-from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from movies.models import Movie
 from movies.serializers import MovieSerializer, RecommendedMovieSerializer
@@ -16,7 +16,7 @@ class MyCustomPagination(PageNumberPagination):
     page_size_query_param = 'page_size'
     max_page_size = 50
 
-class AddMovieWathcedList(CreateAPIView):
+class AddMovieView(CreateAPIView):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
     permission_classes = [IsAuthenticated]
@@ -24,7 +24,11 @@ class AddMovieWathcedList(CreateAPIView):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-class UpdateMovieWatched(RetrieveUpdateAPIView):
+class MovieDetailView(RetrieveAPIView):
+    queryset = Movie.objects.all()
+    serializer_class = MovieSerializer
+
+class UpdateMovieView(RetrieveUpdateAPIView):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
     permission_classes = [IsAdminUser]
