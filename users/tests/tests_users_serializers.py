@@ -55,7 +55,7 @@ class UserSerializerTest(TestCase):
         with self.assertRaises(ValidationError) as context:
             serializer.is_valid(raise_exception=True)
 
-        self.assertIn("As senhas não coicidem.", str(context.exception))
+        self.assertIn("Passwords do not match.", str(context.exception))
 
     def test_user_login_serializer(self):
         valid_data = {
