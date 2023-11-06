@@ -14,7 +14,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         if data['password'] != data['password_confirm']:
-            raise serializers.ValidationError("As senhas não coicidem.")
+            raise serializers.ValidationError("Passwords do not match.")
         validate_password(data['password'])
         return data 
     
