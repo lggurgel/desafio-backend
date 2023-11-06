@@ -43,6 +43,19 @@ class UserSerializerTest(TestCase):
 
         with self.assertRaises(ValidationError):
             serializer.is_valid(raise_exception=True)
+    
+    def test_user_registration_do_no_match_password(self):
+        invalid_data = {
+            "email": "email.teste@email.com",
+            "password": "testuser@#*",
+            "password_confirm": "testuser123",
+        }
+        serializer = UserRegistrationSerializer(data=invalid_data)
+        
+        with self.assertRaises(ValidationError) as context:
+            serializer.is_valid(raise_exception=True)
+
+        self.assertIn("As senhas não coicidem.", str(context.exception))
 
     def test_user_login_serializer(self):
         valid_data = {
